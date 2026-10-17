@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#281e13">
+<title>Motek World — Just a kangaroo. Allegedly.</title>
+<meta name="description" content="Enter Motek World. Meet the roo, play Carrot Chaos, discover secrets and join the mob.">
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#25190f;
+  --panel:#2f1f12;
+  --cream:#fff3d6;
+  --gold:#ffc56b;
+  --gold-2:#ffdf98;
+  --ink:#2a1709;
+  --border:#c18a4d;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--cream);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  overflow-x:hidden;
+}
+button,a{font:inherit}
+button{cursor:pointer}
+a{color:inherit}
+button:focus-visible,a:focus-visible{outline:3px solid #fff;outline-offset:4px}
+.site-shell{min-height:100dvh;background:linear-gradient(180deg,#24170e 0%,#2a1a0f 60%,#22150d 100%)}
+.scene{
+  position:relative;
+  width:100%;
+  aspect-ratio:16/9;
+  background:#624328 url('assets/motek-desktop.png') center/100% 100% no-repeat;
+  overflow:hidden;
+}
+.hotspot{
+  position:absolute;
+  transform:translate(-50%,-50%);
+  border:0;
+  background:transparent;
+  color:var(--ink);
+  padding:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  font-weight:1000;
+  letter-spacing:.02em;
+  line-height:1.02;
+  text-shadow:0 1px 0 rgba(255,237,203,.72), 0 2px 5px rgba(255,231,190,.15);
+  transition:transform .18s ease, filter .18s ease;
+  user-select:none;
+  isolation:isolate;
+}
+.hotspot:hover,.hotspot:focus-visible{transform:translate(-50%,-50%) scale(1.045);filter:brightness(1.08) saturate(1.03)}
+.hotspot:active{transform:translate(-50%,-50%) scale(.98)}
+.hotspot .label{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:.15em;
+  width:100%;
+  height:100%;
+  padding:.2em .45em;
+}
+.hotspot .main-word{display:block}
+.hotspot .small-top{display:block;font-size:.55em;letter-spacing:.06em;margin-bottom:.05em}
+.hotspot .sticker{
+  position:absolute;
+  display:grid;
+  place-items:center;
+  width:1.35em;
+  height:1.35em;
+  border-radius:999px;
+  font-size:.8em;
+  background:rgba(255,244,219,.85);
+  box-shadow:0 4px 10px rgba(58,31,8,.18);
+  transform:rotate(-8deg);
+}
+.hotspot .subline{
+  display:block;
+  margin-top:.08em;
+  font-size:.46em;
+  letter-spacing:.04em;
+}
+.hotspot.about .sticker{right:10%;top:8%}
+.hotspot.mob .sticker{left:8%;top:10%}
+.hotspot.game .sticker{right:8%;bottom:12%}
+.hotspot.files .sticker{left:10%;top:10%}
+.hotspot.secrets .sticker{right:10%;top:10%}
+.hotspot.daily .sticker{left:10%;top:10%}
+.hotspot.main .sticker{right:8%;top:10%;font-size:.72em}
+.hotspot.main{
+  left:49.7%;
+  top:16.3%;
+  width:36%;
+  height:16.8%;
+  font-size:clamp(18px,2.85vw,52px);
+}
+.hotspot.about{
+  left:15.55%;
+  top:26.15%;
+  width:17.8%;
+  height:11%;
+  font-size:clamp(11px,1.55vw,28px);
+}
+.hotspot.mob{
+  left:15.5%;
+  top:42.3%;
+  width:17.8%;
+  height:11%;
+  font-size:clamp(11px,1.55vw,28px);
+}
+.hotspot.game{
+  left:15.65%;
+  top:58.2%;
+  width:17.8%;
+  height:11%;
+  font-size:clamp(11px,1.55vw,28px);
+}
+.hotspot.files{
+  left:83.2%;
+  top:28.7%;
+  width:17.8%;
+  height:11%;
+  font-size:clamp(11px,1.55vw,28px);
+}
+.hotspot.secrets{
+  left:83.2%;
+  top:44.9%;
+  width:17.8%;
+  height:11%;
+  font-size:clamp(11px,1.55vw,28px);
+}
+.hotspot.daily{
+  left:83.2%;
+  top:61%;
+  width:17.8%;
+  height:11%;
+  font-size:clamp(11px,1.55vw,28px);
+}
+.hint-badge{
+  position:absolute;
+  left:50%;
+  bottom:2.2%;
+  transform:translateX(-50%);
+  padding:10px 18px;
+  border:1px solid rgba(255,216,139,.42);
+  border-radius:999px;
+  background:rgba(24,14,9,.62);
+  color:#ffedc6;
+  font-weight:700;
+  letter-spacing:.04em;
+  font-size:clamp(12px,1vw,16px);
+  backdrop-filter:blur(8px);
+  box-shadow:0 8px 24px rgba(0,0,0,.18);
+}
+.footer{
+  text-align:center;
+  padding:16px 12px 26px;
+  background:#25190f;
+  font-size:13px;
+  color:#ead3ae;
+}
+.footer a{color:var(--gold)}
+.modal[hidden]{display:none}
+.modal{
+  position:fixed;
+  inset:0;
+  z-index:30;
+  display:grid;
+  place-items:center;
+  background:rgba(17,10,5,.78);
+  padding:18px;
+  backdrop-filter:blur(9px);
+}
+.panel{
+  position:relative;
+  width:min(640px,100%);
+  max-height:90dvh;
+  overflow:auto;
+  border:2px solid var(--border);
+  border-radius:22px;
+  padding:28px;
+  background:linear-gradient(145deg,#50351c,#25190f 85%);
+  box-shadow:0 24px 80px #0009, inset 0 0 35px #ad72352a;
+}
+.panel h2{
+  font-size:clamp(25px,4vw,39px);
+  line-height:1.1;
+  margin:2px 42px 16px 0;
+  color:#ffd88b;
+}
+.panel p{line-height:1.65}
+.close{
+  position:absolute;
+  right:14px;
+  top:12px;
+  border:1px solid #b38b60;
+  border-radius:50%;
+  width:40px;
+  height:40px;
+  background:#302012;
+  color:white;
+  font-size:26px;
+}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.action{
+  border:1px solid #e0b77b;
+  border-radius:12px;
+  background:#e6a94c;
+  color:#28190a;
+  padding:11px 15px;
+  font-weight:800;
+  text-decoration:none;
+}
+.action.secondary{background:#3c2816;color:#ffe6bb}
+.muted{color:#d6b893}
+.board{
+  background:#1e160e;
+  border:1px solid #9c794a;
+  border-radius:13px;
+  padding:12px;
+  margin-top:14px;
+}
+.game-wrap{position:relative;width:100%;max-width:450px;margin:auto}
+.game-wrap canvas{
+  display:block;
+  width:100%;
+  height:auto;
+  border:3px solid #9a6b34;
+  border-radius:13px;
+  background:#bde6f6;
+  touch-action:none;
+}
+.game-score{display:flex;justify-content:space-between;font-weight:800;margin:8px 0}
+.tiny{font-size:13px}
+.spark{font-size:58px;text-align:center;filter:drop-shadow(0 5px 4px #0007)}
+.carrot-burst{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:50;
+}
+.carrot-spark{
+  position:absolute;
+  left:0;top:0;
+  font-size:24px;
+  opacity:1;
+  transform:translate(-50%,-50%) scale(1);
+  animation:burst .9s ease-out forwards;
+  filter:drop-shadow(0 4px 8px rgba(0,0,0,.2));
+}
+@keyframes burst{
+  0%{opacity:1;transform:translate(var(--x0),var(--y0)) scale(.8) rotate(0deg)}
+  100%{opacity:0;transform:translate(var(--x1),var(--y1)) scale(1.35) rotate(var(--rot))}
+}
+@media(max-width:700px){
+  .scene{aspect-ratio:9/16;background-image:url('assets/motek-mobile.png')}
+  .hotspot{font-size:clamp(10px,2.95vw,18px)}
+  .hotspot.main{left:50%;top:14.4%;width:66%;height:13%}
+  .hotspot.about{left:14%;top:31.5%;width:25%;height:8.8%}
+  .hotspot.mob{left:14%;top:40.2%;width:25%;height:8.8%}
+  .hotspot.game{left:14%;top:49%;width:25%;height:8.8%}
+  .hotspot.files{left:85.3%;top:31.3%;width:25%;height:8.8%}
+  .hotspot.secrets{left:85.3%;top:40.1%;width:25%;height:8.8%}
+  .hotspot.daily{left:85.3%;top:48.9%;width:25%;height:8.8%}
+  .hotspot .sticker{width:1.18em;height:1.18em;font-size:.75em}
+  .panel{padding:22px}
+  .hint-badge{bottom:1.2%;padding:9px 14px;font-size:12px;max-width:90%}
+}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="site-shell">
+  <main class="scene" aria-label="Motek World interactive map">
+    <button class="hotspot main" data-open="world">
+      <span class="label">
+        <span class="sticker">👑</span>
+        <span class="small-top">ENTER</span>
+        <span class="main-word">MOTEK WORLD</span>
+      </span>
+    </button>
+
+    <button class="hotspot about" data-open="about">
+      <span class="label">
+        <span class="sticker">🦘</span>
+        <span>WHO TF</span>
+        <span>IS MOTEK?</span>
+      </span>
+    </button>
+
+    <button class="hotspot mob" data-open="mob">
+      <span class="label">
+        <span class="sticker">🐾</span>
+        <span>JOIN</span>
+        <span>THE MOB</span>
+      </span>
+    </button>
+
+    <button class="hotspot game" data-open="game">
+      <span class="label">
+        <span class="sticker">🥕</span>
+        <span>CARROT</span>
+        <span>CHAOS</span>
+      </span>
+    </button>
+
+    <button class="hotspot files" data-open="files">
+      <span class="label">
+        <span class="sticker">📸</span>
+        <span>ROO</span>
+        <span>FILES</span>
+      </span>
+    </button>
+
+    <button class="hotspot secrets" data-open="secrets">
+      <span class="label">
+        <span class="sticker">📚</span>
+        <span>ROO</span>
+        <span>SECRETS</span>
+      </span>
+    </button>
+
+    <button class="hotspot daily" data-open="daily">
+      <span class="label">
+        <span class="sticker">✨</span>
+        <span>DAILY</span>
+        <span>CARROT</span>
+      </span>
+    </button>
+
+    <div class="hint-badge">tap a sign to start 🥕</div>
+  </main>
+
+  <footer class="footer">just a kangaroo. allegedly. · <a href="https://x.com/motekirl" target="_blank" rel="noopener noreferrer">@motekirl on X</a></footer>
+</div>
+
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="panel">
+    <button class="close" id="close" aria-label="Close">×</button>
+    <h2 id="modal-title"></h2>
+    <div id="content"></div>
+  </div>
+</div>
+
+<div class="carrot-burst" id="burst-layer" aria-hidden="true"></div>
+
+<script>
+(()=>{'use strict';
+const siteUrl='https://easternroo.github.io/motek-world/';
+const x='https://x.com/motekirl';
+const modal=document.querySelector('#modal');
+const title=document.querySelector('#modal-title');
+const content=document.querySelector('#content');
+const close=document.querySelector('#close');
+const burstLayer=document.querySelector('#burst-layer');
+let lastFocus=null,game=null;
+
+const link=(url,label)=>`<a class="action" target="_blank" rel="noopener noreferrer" href="${url}">${label}</a>`;
+const share=(msg)=>`https://twitter.com/intent/tweet?text=${encodeURIComponent(msg)}&url=${encodeURIComponent(siteUrl)}`;
+const carrotQuotes=[
+  'Your portfolio needs water. I brought a carrot.',
+  'BREAKING: local kangaroo refuses to elaborate.',
+  'I came. I hopped. I forgot why.',
+  'Zero thoughts. Maximum hop.',
+  'A carrot a day keeps the bears confused.',
+  'Proof of hop > proof of work.',
+  'Officially approved by absolutely no one.'
+];
+
+const views={
+  world:[
+    'WELCOME TO MOTEK WORLD',
+    `<div class="spark">🦘</div>
+    <p>You’re in. This is Motek’s little corner of the internet. Explore the signs, meet the roo, find secrets, and collect carrots.</p>
+    <div class="actions">
+      <button class="action" data-next="game">PLAY CARROT CHAOS</button>
+      <button class="action secondary" data-next="secrets">FIND A SECRET</button>
+    </div>`
+  ],
+  about:[
+    'WHO TF IS MOTEK?',
+    `<p>Just a kangaroo. Allegedly.</p>
+    <p>Motek is our little roo from the real world, now causing trouble on Animal Twitter. Big ears. Small paws. Highly suspicious internet activity.</p>
+    <div class="actions">${link(x,'MEET HIM ON X')}</div>`
+  ],
+  mob:[
+    'JOIN THE MOB',
+    `<p>The mob is the community around Motek. Join the conversations, drop your memes, and make some noise.</p>
+    <div class="actions">${link(x,'VISIT @MOTEKIRL')}</div>
+    <p class="muted tiny">Community features are coming later. No account or wallet required to explore.</p>`
+  ],
+  files:[
+    'ROO FILES',
+    `<p>Classified kangaroo material. Photos, memes and videos will live here.</p>
+    <div class="board">📸 First collection: COMING SOON</div>
+    <div class="actions">${link(x,'SEE THE LATEST ON X')}</div>`
+  ],
+  secrets:[
+    'ROO SECRETS',
+    `<p>Some secrets are hiding in plain sight.</p>
+    <div class="board" id="secret-text">???</div>
+    <div class="actions"><button class="action" id="reveal">REVEAL SECRET</button></div>`
+  ],
+  daily:[
+    'DAILY CARROT',
+    `<div class="spark">🥕</div>
+    <p>One fresh bit of kangaroo wisdom per day. Same carrot for everyone on this device today.</p>
+    <div class="board" id="daily-text"></div>
+    <div class="actions"><a class="action" id="share-daily" target="_blank" rel="noopener noreferrer">SHARE ON X</a></div>`
+  ],
+  game:[
+    'CARROT CHAOS',
+    `<p class="tiny">Move the kangaroo with your mouse, finger or ← → keys. Catch the carrots. Avoid the rocks!</p>
+    <div class="game-score"><span id="score">CARROTS: 0</span><span id="time">TIME: 30</span></div>
+    <div class="game-wrap"><canvas id="game-canvas" width="450" height="420" aria-label="Carrot catching game"></canvas></div>
+    <div class="actions"><button class="action" id="start-game">START / RESTART</button><a class="action secondary" id="share-score" target="_blank" rel="noopener noreferrer">SHARE SCORE</a></div>`
+  ]
+};
+
+function stopGame(){if(game?.raf)cancelAnimationFrame(game.raf);game=null}
+
+function openView(name){
+  if(!views[name]) return;
+  stopGame();
+  lastFocus=document.activeElement;
+  title.textContent=views[name][0];
+  content.innerHTML=views[name][1];
+  modal.hidden=false;
+  document.body.style.overflow='hidden';
+  close.focus();
+  if(name==='daily') daily();
+  if(name==='secrets') secrets();
+  if(name==='game') prepareGame();
+}
+
+function shut(){
+  stopGame();
+  modal.hidden=true;
+  document.body.style.overflow='';
+  lastFocus?.focus();
+}
+
+function carrotBurst(x,y){
+  const pieces=['🥕','✨','🥕','🍃','🥕','✨'];
+  pieces.forEach((emoji,i)=>{
+    const el=document.createElement('span');
+    el.className='carrot-spark';
+    el.textContent=emoji;
+    const angle=(Math.PI*2/pieces.length)*i + (Math.random()*.35);
+    const dist=35 + Math.random()*45;
+    const x1=Math.cos(angle)*dist;
+    const y1=Math.sin(angle)*dist;
+    el.style.left=`${x}px`;
+    el.style.top=`${y}px`;
+    el.style.setProperty('--x0','-50%, -50%');
+    el.style.setProperty('--y0','0px');
+    el.style.setProperty('--x1',`${x1}px`);
+    el.style.setProperty('--y1',`${y1}px`);
+    el.style.setProperty('--rot',`${-50 + Math.random()*100}deg`);
+    burstLayer.appendChild(el);
+    setTimeout(()=>el.remove(),900);
+  });
+}
+
+function dateKey(){const d=new Date();return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`}
+function daily(){
+  const day=dateKey();
+  let hash=0;
+  for(const c of day) hash=(hash*31+c.charCodeAt(0))>>>0;
+  const quote=carrotQuotes[hash%carrotQuotes.length];
+  document.querySelector('#daily-text').textContent=quote;
+  document.querySelector('#share-daily').href=share(`🥕 Daily Carrot from @motekirl: ${quote}`);
+}
+function secrets(){
+  const messages=[
+    'Secret #001: The carrots know everything.',
+    'Secret #002: Motek is definitely not running this website.',
+    'Secret #003: If you can read this, you are now part of the mob.',
+    'Secret #004: The ears are receiving a signal.'
+  ];
+  let step=0;
+  document.querySelector('#reveal').onclick=()=>{
+    document.querySelector('#secret-text').textContent=messages[step++%messages.length];
+  };
+}
+function prepareGame(){
+  const canvas=document.querySelector('#game-canvas');
+  const ctx=canvas.getContext('2d');
+  if(!ctx) return;
+  const start=document.querySelector('#start-game');
+  let px=225,keys={left:false,right:false};
+  const draw=(items=[],score=0,time=30)=>{
+    const w=450,h=420;
+    ctx.clearRect(0,0,w,h);
+    const sky=ctx.createLinearGradient(0,0,0,h);
+    sky.addColorStop(0,'#94d8ff');
+    sky.addColorStop(1,'#e2edbc');
+    ctx.fillStyle=sky;
+    ctx.fillRect(0,0,w,h);
+    ctx.fillStyle='#81b857';
+    ctx.fillRect(0,350,w,70);
+    ctx.font='44px system-ui';
+    ctx.textAlign='center';
+    ctx.fillText('🦘',px,356);
+    for(const it of items){
+      ctx.font='34px system-ui';
+      ctx.fillText(it.bad?'🪨':'🥕',it.x,it.y);
+    }
+    ctx.fillStyle='#25391a';
+    ctx.textAlign='left';
+    ctx.font='bold 17px system-ui';
+    ctx.fillText('MOTEK WORLD',12,26);
+  };
+  draw();
+
+  const move=e=>{
+    const rect=canvas.getBoundingClientRect();
+    px=Math.max(27,Math.min(423,(e.clientX-rect.left)*450/rect.width));
+    if(!game) draw();
+  };
+  canvas.addEventListener('pointermove',move);
+  canvas.addEventListener('pointerdown',move);
+  window.onkeydown=e=>{
+    if(modal.hidden||!game) return;
+    if(e.key==='ArrowLeft'||e.key==='ArrowRight'){
+      e.preventDefault();
+      keys[e.key==='ArrowLeft'?'left':'right']=true;
+    }
+  };
+  window.onkeyup=e=>{
+    if(e.key==='ArrowLeft'||e.key==='ArrowRight'){
+      keys[e.key==='ArrowLeft'?'left':'right']=false;
+    }
+  };
+
+  start.onclick=()=>{
+    stopGame();
+    let score=0,items=[],last=performance.now(),remaining=30,spawn=0;
+    game={raf:0};
+    const thisGame=game;
+    document.querySelector('#share-score').href=share('I just played Carrot Chaos in Motek World 🥕');
+    const tick=now=>{
+      if(game!==thisGame) return;
+      const dt=Math.min((now-last)/1000,.05);
+      last=now;
+      remaining=Math.max(0,remaining-dt);
+      spawn+=dt;
+      if(keys.left) px=Math.max(27,px-350*dt);
+      if(keys.right) px=Math.min(423,px+350*dt);
+      if(spawn>.55){
+        spawn=0;
+        items.push({x:25+Math.random()*400,y:-20,bad:Math.random()<.23});
+      }
+      for(const item of items){
+        item.y+=175*dt;
+        if(item.y>315&&item.y<368&&Math.abs(item.x-px)<38&&!item.hit){
+          item.hit=true;
+          score+=item.bad?-2:1;
+          score=Math.max(0,score);
+        }
+      }
+      items=items.filter(it=>it.y<440&&!it.hit);
+      draw(items,score,remaining);
+      document.querySelector('#score').textContent=`CARROTS: ${score}`;
+      document.querySelector('#time').textContent=`TIME: ${Math.ceil(remaining)}`;
+      if(remaining>0){
+        thisGame.raf=requestAnimationFrame(tick);
+      } else {
+        game=null;
+        ctx.fillStyle='#1d160bdc';
+        ctx.fillRect(55,145,340,90);
+        ctx.textAlign='center';
+        ctx.fillStyle='#ffe7ac';
+        ctx.font='bold 28px system-ui';
+        ctx.fillText(`FINAL SCORE: ${score}`,225,199);
+        document.querySelector('#share-score').href=share(`I scored ${score} in Carrot Chaos 🥕 Can you beat me? @motekirl`);
+      }
+    };
+    thisGame.raf=requestAnimationFrame(tick);
+  };
+}
+
+document.addEventListener('click',e=>{
+  const clickable=e.target.closest('[data-open],[data-next]');
+  if(clickable){
+    const rect=clickable.getBoundingClientRect();
+    carrotBurst(rect.left + rect.width/2, rect.top + rect.height/2);
+    openView(clickable.dataset.open || clickable.dataset.next);
+  }
+});
+close.addEventListener('click',shut);
+modal.addEventListener('click',e=>{if(e.target===modal) shut()});
+document.addEventListener('keydown',e=>{
+  if(modal.hidden) return;
+  if(e.key==='Escape') shut();
+  if(e.key==='Tab'){
+    const focusable=[...modal.querySelectorAll('button,a[href]')].filter(el=>el.getClientRects().length);
+    if(!focusable.length) return;
+    const i=focusable.indexOf(document.activeElement);
+    if(e.shiftKey && i<=0){
+      e.preventDefault();
+      focusable.at(-1).focus();
+    } else if(!e.shiftKey && i===focusable.length-1){
+      e.preventDefault();
+      focusable[0].focus();
+    }
+  }
+});
+})();
+</script>
+</body>
+</html>
